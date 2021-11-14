@@ -1,0 +1,15 @@
+Comparing files jsfx640.dll and jsfx640_patched.dll
+000422B3: 48 E9
+000422B4: 83 38
+000422B5: C4 8C
+000422B6: 38 07
+000422B7: C3 00    add rsp,0x38/ret --> jmp jsfx.1800BBAF0
+
+000BAEF0: 00 53    jsfx.bin, see jsfx.asm
+000BAEF1: 00 48
+000BAEF2: 00 81
+000BAEF3: 00 EC
+...
+...
+000BAFEB: 00 65
+000BAFEC: 00 72
