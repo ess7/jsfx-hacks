@@ -6,7 +6,7 @@
 #include <ns-eel.h>
 
 
-#define NSEEL_API_MAGIC 0x5421999879e0885f
+#define NSEEL_API_MAGIC 0x2985ac757f70b25c
 typedef struct {
 	uint64_t     magic;
 	void *       (*GetFunc)(char *);

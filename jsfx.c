@@ -4,7 +4,7 @@
 
 #include "patched_bytes.h"
 
-#define NSEEL_API_MAGIC 0x5421999879e0885f
+#define NSEEL_API_MAGIC 0x2985ac757f70b25c
 
 // addresses defined in linker script
 int NSEEL_addfunc_ret_type;
