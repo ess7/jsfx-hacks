@@ -6,16 +6,15 @@
 #include <ns-eel.h>
 
 
-typedef void (*NSEEL_addfunc_ret_type_t)(const char *name, int np, int ret_type,  NSEEL_PPPROC pproc, void *fptr, eel_function_table *destination);
-typedef void (*NSEEL_addfunc_varparm_ex_t)(const char *name, int min_np, int want_exact, NSEEL_PPPROC pproc, EEL_F (NSEEL_CGEN_CALL *fptr)(void *, INT_PTR, EEL_F **), eel_function_table *destination);
-
 #define NSEEL_API_MAGIC 0x5421999879e0885f
 typedef struct {
-	uint64_t                   magic;
-	NSEEL_PPPROC               NSEEL_PProc_RAM;
-	NSEEL_PPPROC               NSEEL_PProc_THIS;
-	NSEEL_addfunc_ret_type_t   NSEEL_addfunc_ret_type;
-	NSEEL_addfunc_varparm_ex_t NSEEL_addfunc_varparm_ex;
+	uint64_t     magic;
+	void *       (*GetFunc)(char *);
+	NSEEL_PPPROC NSEEL_PProc_RAM;
+	NSEEL_PPPROC NSEEL_PProc_THIS;
+	void         (*NSEEL_addfunc_ret_type)(const char *name, int np, int ret_type,  NSEEL_PPPROC pproc, void *fptr, eel_function_table *destination);
+	void         (*NSEEL_addfunc_varparm_ex)(const char *name, int min_np, int want_exact, NSEEL_PPPROC pproc, EEL_F (NSEEL_CGEN_CALL *fptr)(void *, INT_PTR, EEL_F **), eel_function_table *destination);
+	void **      (*eel_gmem_attach)(const char *nm, bool is_alloc);
 } NSEEL_API_t;
 
 #undef  NSEEL_addfunc_retval
@@ -31,12 +30,17 @@ static EEL_F NSEEL_CGEN_CALL add(void *opaque, EEL_F *a, EEL_F *b) {
 extern "C" {
 
 __declspec(dllexport)
-void JSFXRegister(NSEEL_API_t *NSEEL_API) {
+int JSFXRegister(NSEEL_API_t *NSEEL_API) {
 	// make sure we are using the correct API struct
 	if (NSEEL_API->magic != NSEEL_API_MAGIC) {
-		return;
+		return 0;
+	}
+	// test GetFunc
+	if (NSEEL_API->GetFunc("eel_gmem_attach") != NSEEL_API->eel_gmem_attach) {
+		return 0;
 	}
 	NSEEL_addfunc_retval(NSEEL_API, "myadd", 2, NSEEL_API->NSEEL_PProc_THIS, add);
+	return 1;
 }
 
 REAPER_PLUGIN_DLL_EXPORT
